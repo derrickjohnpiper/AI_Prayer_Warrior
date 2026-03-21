@@ -5,6 +5,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static('.')); // Serve index.html and other files from the same folder
 
 const GROQ_KEY = process.env.GROQ_KEY;
 
@@ -43,8 +44,14 @@ app.post('/pray', async (req, res) => {
         });
 
     } catch (err) {
-        res.json({ prayer: "Prayer could not be generated at this time. Please try again." });
+        console.error("Error generating prayer:", err);
+        res.status(500).json({ prayer: "Prayer could not be generated at this time. Please try again." });
     }
+});
+
+// Add a simple health check or root route if static fails
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/index.html');
 });
 
 const PORT = process.env.PORT || 3000;
