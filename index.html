@@ -2,162 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prayer Warrior • Intercessor AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #000000; font-family: 'Georgia', serif; color: #EAE0C8; }
         .header-gradient { background: linear-gradient(to right, #8B0000, #C45508, #FF4500); }
-        .fire-btn { background: linear-gradient(to right, #FF4500, #FF5A00); font-weight: 900; letter-spacing: 1px; }
-        .action-btn { font-weight: 700; letter-spacing: 0.5px; }
-        #petition-input { font-size: 1.25rem; padding: 24px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-3 sm:p-6 bg-black">
+<body class="min-h-screen flex items-center justify-center p-4">
 
-    <div class="w-full max-w-xl sm:max-w-3xl bg-black border-4 border-[#8B4513] rounded-3xl overflow-hidden shadow-2xl">
+    <div class="w-full max-w-xl bg-black border-4 border-[#8B4513] rounded-3xl overflow-hidden">
 
-        <!-- Header -->
-        <div class="header-gradient py-8 sm:py-10 px-6 text-center">
-            <img src="BlkHorsePrayWarriorLogo.png" alt="Prayer Warrior Logo" 
-                 class="mx-auto h-32 sm:h-44 drop-shadow-2xl" 
-                 onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
-            
-            <div id="logo-fallback" class="hidden text-5xl sm:text-6xl font-black tracking-widest text-white" style="text-shadow: 0 0 20px #FF4500;">
-                PRAYER WARRIOR
-            </div>
-
-            <p class="text-[#D2B48C] text-base sm:text-xl mt-4 px-4">
-                Each of us can utilize additional prayer. Please submit your prayer request in the box below. 
-                Then press “Submit Prayer Request.”
-            </p>
+        <div class="header-gradient py-8 px-6 text-center">
+            <img src="BlkHorsePrayWarriorLogo.png" alt="Prayer Warrior" class="mx-auto h-36">
+            <p class="text-[#D2B48C] mt-3">Each of us can utilize additional prayer.<br>Please submit your prayer request below.</p>
         </div>
 
-        <!-- Main -->
-        <div class="p-6 sm:p-10 rust-panel">
-            <div id="greeting" class="bg-[#2c0f0a] p-5 rounded-2xl border border-[#B73225]">
-                <div class="flex gap-4">
-                    <div class="text-4xl">🛡️</div>
-                    <div>
-                        <p class="font-bold text-[#FF5A00] text-lg">Intercessor AI – Prayer Warrior Activated</p>
-                        <p class="mt-2 text-base">Warrior, what battle shall we take to the throne today?</p>
-                    </div>
+        <div class="p-6">
+            <input id="petition-input" type="text" placeholder="Type your prayer request here..." 
+                   class="w-full p-5 border-4 border-orange-500 rounded-3xl text-lg">
+
+            <button onclick="generatePrayer()" 
+                    class="mt-4 w-full bg-orange-600 hover:bg-orange-500 py-5 text-xl font-bold rounded-3xl">
+                SUBMIT PRAYER REQUEST
+            </button>
+
+            <div id="prayer-result" class="hidden mt-6">
+                <div id="prayer-content" class="bg-zinc-900 p-6 rounded-2xl text-[#EAE0C8]"></div>
+                <div class="mt-4 flex gap-3">
+                    <button onclick="readPrayer()" class="flex-1 bg-green-700 py-4 rounded-2xl">🔊 READ ALOUD</button>
+                    <button onclick="resetApp()" class="flex-1 bg-amber-700 py-4 rounded-2xl">SUBMIT ANOTHER</button>
                 </div>
             </div>
-
-            <div class="mt-6">
-                <input id="petition-input" type="text" placeholder="Type your prayer request here (e.g. keep me close to God… heal my family…)"
-                       class="w-full bg-[#1f0f0a] border-4 border-[#FF4500] rounded-3xl px-6 py-6 text-[#EAE0C8] placeholder-[#D2B48C] focus:outline-none focus:border-[#FF5A00] text-lg sm:text-xl shadow-lg">
-            </div>
-
-            <div class="mt-6">
-                <button onclick="generatePrayer()" 
-                        class="fire-btn w-full text-white text-xl sm:text-2xl py-6 rounded-3xl shadow-xl hover:brightness-110">
-                    SUBMIT PRAYER REQUEST
-                </button>
-            </div>
-
-            <div id="loading" class="hidden mt-8 text-center text-[#FF4500] text-xl font-medium">
-                🔥 The Intercessor is on the battlefield… crafting a powerful prayer…
-            </div>
-
-            <!-- Result -->
-            <div id="prayer-result" class="hidden mt-8">
-                <div class="bg-black border-4 border-[#8B0000] rounded-3xl p-6 sm:p-8">
-                    <div id="prayer-content" class="text-[#EAE0C8] leading-relaxed text-base sm:text-lg"></div>
-                </div>
-                
-                <div class="mt-6 flex flex-col sm:flex-row gap-3">
-                    <button onclick="readPrayer()" 
-                            class="action-btn flex-1 bg-[#B73225] hover:bg-[#8B0000] text-white text-lg py-5 rounded-2xl">
-                        🔊 READ ALOUD
-                    </button>
-                    <button onclick="resetApp()" 
-                            class="action-btn flex-1 bg-[#8B4513] hover:bg-[#A34321] text-white text-lg py-5 rounded-2xl">
-                        SUBMIT ANOTHER PRAYER REQUEST
-                    </button>
-                </div>
-
-                <p class="text-[#D2B48C] font-semibold mt-8">Suggested Guidance</p>
-                <div id="bible-verse" class="text-[#FF4500] italic text-base sm:text-lg border-l-4 border-[#FF4500] pl-4 mt-2"></div>
-
-                <p class="text-center text-[#D2B48C] italic mt-6 text-sm">
-                    “The prayer of the righteous is powerful and effective.” — James 5:16
-                </p>
-            </div>
-        </div>
-
-        <div class="bg-black py-4 text-center text-[#D2B48C] text-xs">
-            Prayer Warrior © 2026 • Built to Fight on Our Knees
         </div>
     </div>
 
     <script>
-        const API_KEY = "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";
-        const API_URL = "https://api.groq.com/openai/v1/chat/completions";
-        const MODEL = "llama-3.3-70b-versatile";
-
-        let lastPetition = "";
+        const PROXY_URL = "https://your-proxy-name.onrender.com/pray";   // ← Change this after deploying
 
         async function generatePrayer() {
-            let petition = document.getElementById("petition-input").value.trim();
-            if (!petition) return alert("Please type your prayer request.");
+            const petition = document.getElementById("petition-input").value.trim();
+            if (!petition) return alert("Please type your request");
 
-            const forceUnique = (petition.toLowerCase() === lastPetition.toLowerCase()) 
-                ? " Make this completely different, much longer, and even more powerful than before." : "";
+            const res = await fetch(PROXY_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ petition })
+            });
 
-            document.getElementById("loading").classList.remove("hidden");
-            document.getElementById("greeting").classList.add("hidden");
-
-            try {
-                const res = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Authorization": `Bearer ${API_KEY}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        model: MODEL,
-                        messages: [{
-                            role: "system",
-                            content: `You are Intercessor AI, a powerful Prayer Warrior. 
-Write a rich, detailed, passionate, and lengthy prayer of AT LEAST 280–380 words. 
-Use flowing sentences, repetition, Holy Ghost fire, and strong imagery. 
-Start with a fresh name for God every time. 
-Use the petition exactly twice, then expand and rephrase it richly. 
-End with a triumphant AMEN and Hallelujah! Glory to God!
-Then add exactly on a new line: 
-RELATED BIBLE VERSE: [a fresh, relevant Bible verse with full reference]`
-                        }, {
-                            role: "user",
-                            content: `Generate a long, powerful prayer for: "${petition}".${forceUnique}`
-                        }],
-                        temperature: 1.1,
-                        max_tokens: 1500
-                    })
-                });
-
-                const data = await res.json();
-                let fullText = data.choices[0].message.content.trim();
-
-                let prayerPart = fullText;
-                let versePart = "Psalm 46:1 – God is our refuge and strength, a very present help in trouble.";
-
-                if (fullText.includes("RELATED BIBLE VERSE:")) {
-                    const parts = fullText.split("RELATED BIBLE VERSE:");
-                    prayerPart = parts[0].trim();
-                    versePart = parts[1] ? parts[1].trim() : versePart;
-                }
-
-                document.getElementById("prayer-content").innerHTML = prayerPart;
-                document.getElementById("bible-verse").innerHTML = versePart;
-
-                document.getElementById("loading").classList.add("hidden");
-                document.getElementById("prayer-result").classList.remove("hidden");
-
-                lastPetition = petition;
-
-            } catch (e) {
-                alert("Try again, warrior.");
-                resetApp();
-            }
+            const data = await res.json();
+            document.getElementById("prayer-content").innerHTML = data.prayer;
+            document.getElementById("prayer-result").classList.remove("hidden");
         }
 
         function readPrayer() {
@@ -167,9 +63,7 @@ RELATED BIBLE VERSE: [a fresh, relevant Bible verse with full reference]`
 
         function resetApp() {
             document.getElementById("prayer-result").classList.add("hidden");
-            document.getElementById("greeting").classList.remove("hidden");
             document.getElementById("petition-input").value = "";
-            document.getElementById("petition-input").focus();
         }
     </script>
 </body>
