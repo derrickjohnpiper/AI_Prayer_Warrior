@@ -6,12 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GROQ_KEY = "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"; // ← Put your NEW key here
+const GROQ_KEY = process.env.GROQ_KEY;   // ← Reads from Render settings
 
 app.post('/pray', async (req, res) => {
-    const { petition } = req.body;
-
     try {
+        const { petition } = req.body;
+
         const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -22,29 +22,30 @@ app.post('/pray', async (req, res) => {
                 model: "llama-3.3-70b-versatile",
                 messages: [{
                     role: "system",
-                    content: `Write a rich, detailed, passionate prayer of at least 300 words... (same full instructions as before)`
+                    content: "You are Intercessor AI. Write a rich, long (300+ words), passionate African American Baptist style prayer. Use the petition twice then expand it. End with AMEN + Hallelujah. Then add exactly: RELATED BIBLE VERSE: [fresh relevant verse with reference]"
                 }, {
                     role: "user",
-                    content: `Generate a powerful prayer for: "${petition}"`
+                    content: `Generate a powerful prayer for this request: "${petition}"`
                 }],
                 temperature: 1.1,
-                max_tokens: 1400
+                max_tokens: 1500
             })
         });
 
         const data = await response.json();
-        const fullText = data.choices[0].message.content;
+        const full = data.choices[0].message.content;
 
-        const [prayer, verse] = fullText.split("RELATED BIBLE VERSE:");
+        const [prayer, verse] = full.split("RELATED BIBLE VERSE:");
 
         res.json({
-            prayer: prayer || fullText,
+            prayer: prayer || full,
             verse: verse || "Isaiah 41:10 – Fear not, for I am with you."
         });
 
-    } catch (error) {
-        res.status(500).json({ error: "Server error" });
+    } catch (err) {
+        res.json({ prayer: "Prayer could not be generated at this time. Please try again." });
     }
 });
 
-app.listen(3000, () => console.log("✅ Prayer Proxy running on port 3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Proxy running safely on port ${PORT}`));
