@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const GROQ_KEY = process.env.GROQ_KEY;   // ← Reads from Render settings
+const GROQ_KEY = process.env.GROQ_KEY;
 
 app.post('/pray', async (req, res) => {
     try {
