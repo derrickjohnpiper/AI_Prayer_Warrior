@@ -8,52 +8,83 @@
     <style>
         body { background: #000000; font-family: 'Georgia', serif; color: #EAE0C8; }
         .header-gradient { background: linear-gradient(to right, #8B0000, #C45508, #FF4500); }
+        .fire-btn { background: linear-gradient(to right, #FF4500, #FF5A00); font-weight: 900; letter-spacing: 1px; }
+        .action-btn { font-weight: 700; letter-spacing: 0.5px; }
+        #petition-input { font-size: 1.25rem; padding: 24px; }
     </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4">
+<body class="min-h-screen flex items-center justify-center p-4 bg-black">
 
-    <div class="w-full max-w-xl bg-black border-4 border-[#8B4513] rounded-3xl overflow-hidden">
+    <div class="w-full max-w-xl bg-black border-4 border-[#8B4513] rounded-3xl overflow-hidden shadow-2xl">
 
+        <!-- Header -->
         <div class="header-gradient py-8 px-6 text-center">
-            <img src="BlkHorsePrayWarriorLogo.png" alt="Prayer Warrior" class="mx-auto h-36">
-            <p class="text-[#D2B48C] mt-3">Each of us can utilize additional prayer.<br>Please submit your prayer request below.</p>
+            <img src="BlkHorsePrayWarriorLogo.png" alt="Prayer Warrior Logo" 
+                 class="mx-auto h-36" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block';">
+            <div id="logo-fallback" class="hidden text-5xl font-black tracking-widest text-white" style="text-shadow: 0 0 20px #FF4500;">
+                PRAYER WARRIOR
+            </div>
+            <p class="text-[#D2B48C] text-lg mt-3">
+                Each of us can utilize additional prayer. Please submit your prayer request in the box below. 
+                Then press “Submit Prayer Request.”
+            </p>
         </div>
 
         <div class="p-6">
-            <input id="petition-input" type="text" placeholder="Type your prayer request here..." 
-                   class="w-full p-5 border-4 border-orange-500 rounded-3xl text-lg">
+            <input id="petition-input" type="text" placeholder="Type your prayer request here (e.g. keep me close to God… heal my family… give me strength)"
+                   class="w-full bg-[#1f0f0a] border-4 border-[#FF4500] rounded-3xl px-6 py-6 text-[#EAE0C8] placeholder-[#D2B48C] text-lg">
 
             <button onclick="generatePrayer()" 
-                    class="mt-4 w-full bg-orange-600 hover:bg-orange-500 py-5 text-xl font-bold rounded-3xl">
+                    class="mt-6 fire-btn w-full text-white text-2xl py-6 rounded-3xl">
                 SUBMIT PRAYER REQUEST
             </button>
 
-            <div id="prayer-result" class="hidden mt-6">
-                <div id="prayer-content" class="bg-zinc-900 p-6 rounded-2xl text-[#EAE0C8]"></div>
-                <div class="mt-4 flex gap-3">
-                    <button onclick="readPrayer()" class="flex-1 bg-green-700 py-4 rounded-2xl">🔊 READ ALOUD</button>
-                    <button onclick="resetApp()" class="flex-1 bg-amber-700 py-4 rounded-2xl">SUBMIT ANOTHER</button>
+            <div id="loading" class="hidden mt-8 text-center text-[#FF4500] text-xl">🔥 The Intercessor is crafting a powerful prayer…</div>
+
+            <div id="prayer-result" class="hidden mt-8">
+                <div class="bg-zinc-900 p-6 rounded-3xl text-[#EAE0C8] leading-relaxed" id="prayer-content"></div>
+                
+                <div class="mt-6 flex flex-col gap-3">
+                    <button onclick="readPrayer()" class="action-btn bg-[#B73225] py-5 rounded-2xl text-lg">🔊 READ ALOUD</button>
+                    <button onclick="resetApp()" class="action-btn bg-[#8B4513] py-5 rounded-2xl text-lg">SUBMIT ANOTHER PRAYER REQUEST</button>
                 </div>
+
+                <p class="text-[#D2B48C] font-semibold mt-8">Suggested Guidance</p>
+                <div id="bible-verse" class="text-[#FF4500] italic text-lg border-l-4 border-[#FF4500] pl-4 mt-2"></div>
+
+                <p class="text-center text-[#D2B48C] italic mt-6 text-sm">
+                    “The prayer of the righteous is powerful and effective.” — James 5:16
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        const PROXY_URL = "https://your-proxy-name.onrender.com/pray";   // ← Change this after deploying
+        const PROXY_URL = "https://ai-prayer-warrior.onrender.com";
 
         async function generatePrayer() {
             const petition = document.getElementById("petition-input").value.trim();
-            if (!petition) return alert("Please type your request");
+            if (!petition) return alert("Please type your prayer request");
 
-            const res = await fetch(PROXY_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ petition })
-            });
+            document.getElementById("loading").classList.remove("hidden");
 
-            const data = await res.json();
-            document.getElementById("prayer-content").innerHTML = data.prayer;
-            document.getElementById("prayer-result").classList.remove("hidden");
+            try {
+                const res = await fetch(PROXY_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ petition })
+                });
+
+                const data = await res.json();
+                document.getElementById("prayer-content").innerHTML = data.prayer;
+                document.getElementById("bible-verse").innerHTML = data.verse;
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("prayer-result").classList.remove("hidden");
+
+            } catch (e) {
+                alert("Error connecting to server. Please try again.");
+                document.getElementById("loading").classList.add("hidden");
+            }
         }
 
         function readPrayer() {
@@ -64,6 +95,7 @@
         function resetApp() {
             document.getElementById("prayer-result").classList.add("hidden");
             document.getElementById("petition-input").value = "";
+            document.getElementById("petition-input").focus();
         }
     </script>
 </body>
