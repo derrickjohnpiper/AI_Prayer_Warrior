@@ -9,6 +9,16 @@ app.use(express.static('.')); // Serve index.html and other files from the same 
 
 const GROQ_KEY = process.env.GROQ_KEY;
 
+app.get('/api/get-key', (req, res) => {
+  // In production: read from environment variable only
+  const key = process.env.GROQ_API_KEY;
+  if (!key) {
+    return res.status(500).json({ error: "Server configuration error" });
+  }
+  res.json({ apiKey: key });
+  // OR just: res.send(key);  // if client expects plain text
+});
+
 app.post('/pray', async (req, res) => {
     try {
         const { petition } = req.body;
