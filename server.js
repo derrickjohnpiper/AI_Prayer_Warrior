@@ -7,6 +7,8 @@ const app = express();
 // Allow requests from GitHub Pages and local development
 const allowedOrigins = [
     'https://derrickjohnpiper.github.io',
+    'https://aiprayerwarrior.store',
+    'https://www.aiprayerwarrior.store',
     'http://localhost:3000',
     'http://127.0.0.1:3000'
 ];
@@ -116,7 +118,7 @@ RELATED BIBLE VERSE: [one fresh, relevant Scripture verse with reference, e.g. P
                 model: "llama-3.3-70b-versatile",
                 messages: [
                     { role: "system", content: systemPrompt },
-                    { role: "user",   content: `Write a powerful, unique prayer for this request: "${petition}"` }
+                    { role: "user", content: `Write a powerful, unique prayer for this request: "${petition}"` }
                 ],
                 temperature: 1.2,
                 max_tokens: 1500
